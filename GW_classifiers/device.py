@@ -5,6 +5,10 @@ def moveto(obj, device):
     """
     Moves an object to a specified device (e.g., 'cpu' or 'cuda').
     Parameters:
+    obj: The object to move, which can be a tensor, list, string, dictionary, or set.
+    device: The target device to move the object to.    
+    Returns:
+    The object moved to the specified device, or the original object if it cannot be moved.
     """
     if hasattr(obj, 'to'): 
         return obj.to(device) 
