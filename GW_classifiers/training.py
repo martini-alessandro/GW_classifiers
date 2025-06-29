@@ -7,7 +7,26 @@ from device import moveTo
 
 
 def train_network(model, optimizer, loss_func, train_dataloader, test_dataloader = None, epochs = 50, score_funcs = None,\
-                  learning_rate = .01, device = 'cpu', checkpoint_file = None, save_every = 10): 
+                  device = 'cpu', checkpoint_file = None, save_every = 10): 
+    """
+    Trains a neural network model using the provided optimizer and loss function.
+    
+    Parameters:
+    model: The neural network model to be trained.
+    optimizer: The optimizer to use for training the model.
+    loss_func: The loss function to compute the training loss.
+    train_dataloader: DataLoader for the training dataset.
+    test_dataloader: DataLoader for the test dataset (optional).
+    epochs: Number of epochs to train the model.
+    score_funcs: Dictionary of evaluation functions to compute scores during training.
+    device: The device to run the training on (e.g., 'cpu' or 'cuda').
+    checkpoint_file: File path to save the model checkpoints (optional).
+    save_every: Frequency of saving checkpoints (in epochs).
+    
+    Returns:
+    A DataFrame containing the training results, including loss and evaluation scores.
+    """
+
     to_track = ['epoch', 'total_time', 'train loss'] 
     if test_dataloader is not None: 
         to_track.append('test loss')
@@ -25,15 +44,16 @@ def train_network(model, optimizer, loss_func, train_dataloader, test_dataloader
     
     for epoch in epochs: 
         model.train() 
-        time = run_epoch(model, loss_func, optimizer, train_dataloader, score_funcs, device, results) 
+        tota_train_time += run_epoch(model, loss_func, optimizer, train_dataloader, score_funcs, device, results) 
         
-        results['total time'].append(time)
+        results['total time'].append(total_train_time)
         results['epoch'].append('epoch')
 
         if test_dataloader is not None: 
             model.eval() 
             with torch.no_grad(): 
-                run_epoch(model, loss_func, optimizer, test_dataloader, score_funcs, device, results, prefix = 'test', desc = 'test') 
+                run_epoch(model, loss_func, optimizer, test_dataloader, score_funcs, device, results,\
+                          prefix = 'test', desc = 'test') 
 
             if checkpoint_file is not None: 
                 if epoch % save_every == 0: 
@@ -47,7 +67,9 @@ def train_network(model, optimizer, loss_func, train_dataloader, test_dataloader
     return pd.DataFrame 
 
 def run_epoch(model, loss_func, optimizer, data_loader, score_funcs, device, results, prefix = 'train', desc = 'Training'): 
-
+    """
+    Runs a single epoch of training or evaluation on the model using the provided data loader.   
+    """
     running_loss = []
     y_true = []
     y_pred = []
