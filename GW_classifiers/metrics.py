@@ -1,6 +1,6 @@
 from sklearn.metrics import precision_recall_curve, roc_curve, auc 
 
-def auc_metric(y_true, y_pred, method = precision_recall_curve):
+def auc_metric(y_true, y_pred, method = "precision recall"):
     """
     Compute the Area Under the Curve (AUC) for a given method.
     
@@ -8,6 +8,8 @@ def auc_metric(y_true, y_pred, method = precision_recall_curve):
     - y_true: True binary labels.
     - y_pred: Predicted scores or probabilities.
     - method: Function to compute the curve (default is precision_recall_curve).
+              Supported methods are "precision recall" and "roc".
+
     
     Returns:
     - (precision, recoll, auc_value) if method is "precision recall"
