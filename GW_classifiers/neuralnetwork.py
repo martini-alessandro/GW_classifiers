@@ -11,15 +11,21 @@ class FFNetwork(nn.module):
     output_size (int): The number of output classes.
     """
     
-    def __init__(self, hidden_layers, output_size, activation_function=nn.ReLU):
-        super(FFNetwork, self).__init__()
-        self.module = []
-        self.fc1 = nn.Linear(input_size, hidden_size)
-        self.relu = nn.ReLU()
-        self.fc2 = nn.Linear(hidden_size, output_size)
+    def __init__(self, input_size, hidden_layers, output_size, activation_function=nn.ReLU, dropout = 0.0):
+        super().__ini__() 
+
+        layers = [] 
+        previous_layer = input_size 
+
+        for layer in hidden_layers:
+            layers.append(nn.Linear(previous_layer, layer))
+            layers.append(activation_function())
+            if dropout > 0:
+                layers.append(nn.Dropout(dropout))
+            previous_layer = layer
+
+        layers.append(nn.Linear(previous_layer, output_size))
+        self.network = nn.Sequential(*layers) 
     
     def forward(self, x):
-        x = self.fc1(x)
-        x = self.relu(x)
-        x = self.fc2(x)
-        return x
+        return self.network(x) 
