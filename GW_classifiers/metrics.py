@@ -1,4 +1,4 @@
-from sklearn.metrics import precision_recall_curve, roc_curve, roc_auc_score, auc 
+from sklearn.metrics import precision_recall_curve, roc_curve, auc 
 
 def auc_metric(y_true, y_pred, method = precision_recall_curve):
     """
