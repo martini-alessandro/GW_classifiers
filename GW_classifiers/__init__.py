@@ -1,7 +1,6 @@
-from .device import moveTo
 from .training import train_network 
-from .neuralnetwork import FFNetwork 
+from .models import FFNetwork 
 from .plot import * 
-from .dataprocessing import preprocessData 
+from .dataprocessing import loadAndPreprocess
 from .metrics import auc_metric 
-
+from .utils import *  
