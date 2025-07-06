@@ -3,11 +3,10 @@ import pandas as pd
 import torch
 from time import time 
 from tqdm import tqdm
-from device import moveTo 
 from torch.utils.data import TensorDataset, DataLoader, random_split
 from sklearn.model_selection import GridSearchCV
 from importlib import import_module
-from GW_classifiers.utils import load_module 
+from GW_classifiers.utils import load_module, moveTo
 
 
 def train_model(name, X_train, y_train, config): 

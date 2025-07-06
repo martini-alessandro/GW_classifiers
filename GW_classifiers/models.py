@@ -26,7 +26,7 @@ def load_model(name, path = "results/models"):
 
 
 
-class FFNetwork(nn.module):
+class FFNetwork(nn.Module):
     """
     A simple feedforward neural network with N hidden layers.
     
