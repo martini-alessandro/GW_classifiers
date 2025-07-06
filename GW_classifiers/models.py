@@ -1,5 +1,30 @@
-import torch 
 from torch import nn
+import joblib 
+import os 
+
+def save_model(model, name, path = "results/models"):
+    """ 
+    Save a model to a file using joblib.
+    Parameters:
+    model (nn.Module): The PyTorch model to save.
+    name (str): The name of the model file.
+    path (str): The directory where the model will be saved.
+    """ 
+    joblib.dump(model, os.path.join(path, f"{name}.pkl"))
+
+
+def load_model(name, path = "results/models"): 
+    """
+    Loads a model using joblib 
+    Parameters: 
+    -name: The name of the file 
+    -path: The path where the models is stored 
+    Return: 
+    -The Loaded model 
+    """
+    return joblib.load(os.path.join(path, f"{name}.pkl"))
+
+
 
 class FFNetwork(nn.module):
     """
