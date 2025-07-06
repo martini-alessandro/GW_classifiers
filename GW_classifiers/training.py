@@ -4,10 +4,50 @@ import torch
 from time import time 
 from tqdm import tqdm
 from device import moveTo 
+from torch.utils.data import TensorDataset, DataLoader, random_split
+from sklearn.model_selection import GridSearchCV
+from importlib import import_module
+from GW_classifiers.utils import load_module 
+
+
+def train_model(name, X_train, y_train, config): 
+    model = load_module(config["path"], name)
+    if hasattr(model, "fit"): 
+        if config["cv"] > 0: 
+            model = GridSearchCV(model, param_grid = config["params"], cv = config["cv"], scoring = 'roc_auc')
+        model.fit(X_train, y_train)
+    else: 
+        train_torch(model, X_train, y_train, config)
+
+    return model 
+
+    
+
+def train_torch(model, X_train, y_train, config):
+    #Convert to torch tensors  
+    model_config = config[model]
+    X = torch.Tensor(X_train, dtype = torch.float32)
+    y = torch.Tensor(y_train, dtype = torch.long)
+    n_train = mode_config["train_size"] * len(X) 
+    n_test = len(X) - N_train 
+    train_dataset, test_dataset = random_split(TensorDataset(X,y), [n_train, n_test])
+        
+
+    #Define Dataloader 
+    train_dataloader = DataLoader(train_dataset, batch_size = config['batch_size'], shuffle = config['shuffle'])
+    test_dataloader = DataLoader(test_dataset)
+
+    optimizer = importlib.import_module()
+    loss_func = import_module.import_module(nn.Loss) 
+
+    train_network(model, optimizer, loss_func, train_dataloader, test_dataloader, config['epochs'] )
+
+    return model 
+
 
 
 def train_network(model, optimizer, loss_func, train_dataloader, test_dataloader = None, epochs = 50, score_funcs = None,\
-                  device = 'cpu', checkpoint_file = None, save_every = 10): 
+                  device = 'cpu', checkpoint_file = 'results/state_dict', save_every = 10): 
     """
     Trains a neural network model using the provided optimizer and loss function.
     
@@ -41,7 +81,8 @@ def train_network(model, optimizer, loss_func, train_dataloader, test_dataloader
     for item in to_track: 
         results[item] = [] 
 
-    
+    best_loss = np.inf 
+    best_state_dict = None    
     for epoch in epochs: 
         model.train() 
         tota_train_time += run_epoch(model, loss_func, optimizer, train_dataloader, score_funcs, device, results) 
@@ -55,13 +96,13 @@ def train_network(model, optimizer, loss_func, train_dataloader, test_dataloader
                 run_epoch(model, loss_func, optimizer, test_dataloader, score_funcs, device, results,\
                           prefix = 'test', desc = 'test') 
 
-            if checkpoint_file is not None: 
-                if epoch % save_every == 0: 
-                    state_dict = model.state_dict() 
-                    torch.save({'epoch': epoch, 
-                                'state_dict': state_dict,
-                                'optimizer_state_dict': optimizer.state_dict(), 
-                                'results': results}, checkpoint_file)
+        if checkpoint_file is not None: 
+            if epoch % save_every == 0: 
+                state_dict = model.state_dict() 
+                torch.save({'epoch': epoch, 
+                            'state_dict': state_dict,
+                            'optimizer_state_dict': optimizer.state_dict(), 
+                            'results': results}, checkpoint_file)
         return pd.DataFrame(results), checkpoint_file 
 
     return pd.DataFrame 
