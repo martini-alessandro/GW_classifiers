@@ -7,7 +7,7 @@ columns_to_drop =  [
                     'theta1','lag0','lag1','factor0','Qveto3','era','strain1','size0', 'Lveto1','Lveto2'\
                     ]
 
-def preprocessData(df):
+def loadAndPreprocess(data_dir):
     """
     Preprocess the input DataFrame by removing rows with NaN values and resetting the index.
     
@@ -17,6 +17,7 @@ def preprocessData(df):
     Returns:
     pd.DataFrame: The preprocessed DataFrame with NaN values removed and index reset.
     """
+    df = pd.read_csv(data_dir)
     df = df.dropna()
     df.reset_index(drop=True, inplace=True)
     df = df.drop(columns = columns_to_drop) 
@@ -30,6 +31,4 @@ def preprocessData(df):
     #Scale the data 
     df = df.drop(columns = ['noise0', 'noise1'])
 
-    return df 
-
-    return df
+    return df['class'], df.drop(coulmn = 'class')
