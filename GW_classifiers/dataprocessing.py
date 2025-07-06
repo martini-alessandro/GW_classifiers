@@ -1,5 +1,5 @@
 import pandas as pd
-
+import numpy as np 
 
 columns_to_drop =  [
                     'rho1','duration0','bandwidth0','frequency0','time1','chirp1','chirp3','chirp5',\
@@ -31,4 +31,4 @@ def loadAndPreprocess(data_dir):
     #Scale the data 
     df = df.drop(columns = ['noise0', 'noise1'])
 
-    return df['class'], df.drop(coulmn = 'class')
+    return df.drop(columns = 'class'), df['class']
