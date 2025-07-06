@@ -1,7 +1,4 @@
-import torch 
-
-    
-def moveto(obj, device): 
+def moveTo(obj, device): 
     """
     Moves an object to a specified device (e.g., 'cpu' or 'cuda').
     Parameters:
