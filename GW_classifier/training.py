@@ -7,31 +7,38 @@ from torch.utils.data import TensorDataset, DataLoader, random_split
 from sklearn.model_selection import GridSearchCV
 from importlib import import_module
 from GW_classifier.utils import load_module, moveTo
+from GW_classifier.logger import get_logger 
 
+logger = get_logger(__name__)
 
 def train_model(config, X_train, y_train): 
     print(config)
     model = load_module(config["model_path"], config["model_name"])
     print("Loaded model")
     if hasattr(model, "fit"): 
-        if config["cv"] > 0: 
+        if config["cv"] > 1: 
+            logger.info("Using GridSearchCV for hyperparameter tuning")
             print(config["params"])
             model = GridSearchCV(model, param_grid = config["params"], cv = config["cv"], scoring = config["scoring"])
+            results = None 
         model.fit(X_train, y_train)
     else: 
-        train_torch(model, X_train, y_train, config)
+        model, results = train_torch(model, X_train, y_train, config)
 
+    return model, results 
+
+
+def train_sklearn(model, X_train, y_train, config):
+    model.fit(X_train, y_train) 
     return model 
-
-    
 
 def train_torch(model, X_train, y_train, config):
     #Convert to torch tensors  
     model_config = config[model]
     X = torch.Tensor(X_train, dtype = torch.float32)
     y = torch.Tensor(y_train, dtype = torch.long)
-    n_train = mode_config["train_size"] * len(X) 
-    n_test = len(X) - N_train 
+    n_train = config["train_size"] * len(X) 
+    n_test = len(X) - n_train 
     train_dataset, test_dataset = random_split(TensorDataset(X,y), [n_train, n_test])
         
 
@@ -42,9 +49,9 @@ def train_torch(model, X_train, y_train, config):
     optimizer = importlib.import_module()
     loss_func = import_module.import_module(nn.Loss) 
 
-    train_network(model, optimizer, loss_func, train_dataloader, test_dataloader, config['epochs'] )
+    results = train_network(model, optimizer, loss_func, train_dataloader, test_dataloader, config['epochs'])
 
-    return model 
+    return model, results
 
 
 
