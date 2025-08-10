@@ -19,7 +19,7 @@ def train_model(config, X_train, y_train):
         if config["cv"] > 1: 
             logger.info("Using GridSearchCV for hyperparameter tuning")
             print(config["params"])
-            model = GridSearchCV(model, param_grid = config["params"], cv = config["cv"], scoring = config["scoring"])
+            model = GridSearchCV(model, param_grid = config["params"], cv = config["cv"], scoring = config["cv_scoring"])
             results = None 
         model.fit(X_train, y_train)
     else: 
