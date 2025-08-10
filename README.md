@@ -71,23 +71,24 @@ This feature will allow the pipeline to load a previously trained model and appl
 ## Repository Structure
 
 For readability and maintainability, the pipeline is divided into different modules, each handling a specific part of the workflow:
-
+```
 GW_classifier/
-├── Config/ # Configs to customize analysis
-├── Data/ # Data to be analyzed
-├── Results/ # Results, plots, pretrained models
-├── Notebooks/ # Exploratory or experimental notebooks
+├── Config/               # Configs to customize analysis 
+├── Data/                 # Data to be analyzed
+├── Results/              # Results, plots, pretrained models
+├── Notebooks/            # Exploratory or experimental notebooks
 └── GW_classifier/
-├── init.py
-├── logger.py # Logging setup
-├── utils.py # Load/save models and helpers
-├── dataprocessing.py # Load and process data
-├── NeuralNetwork.py # PyTorch feed-forward network
-├── plot.py # Plotting results
-├── training.py # Training logic + CrossValidation
-├── testing.py # Final evaluation stage
-└── pipeline.py # Orchestrates the pipeline
-
+    ├── __init__.py
+    ├── logger.py         # Logging setup
+    ├── utils.py          # Load/save models and helpers
+    ├── dataprocessing.py # Load and process data
+    ├── NeuralNetwork.py  # PyTorch feed-forward network
+    ├── plot.py           # Plotting results
+    ├── training.py       # Training logic + CrossValidation
+    ├── testing.py        # Final evaluation stage
+    └── pipeline.py       # Orchestrates the pipeline
+    
+```
 
 
 
