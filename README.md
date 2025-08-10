@@ -72,21 +72,21 @@ This feature will allow the pipeline to load a previously trained model and appl
 
 For readability and maintainability, the pipeline is divided into different modules, each handling a specific part of the workflow:
 
-
--|Config          #Contain configs to customize analysis 
--|Data            #Contains the data to be analysed
--|Results         #Store the results, plots and pretrained models that can be reused
--|NoteBooks       #Notebooks with interesting stuff in it 
--|GW_Classifier
-    -|__init__.py 
-    -|logger.py 
-    -|utils.py          #To load and save models and modules 
-    -|dataprocessing.py #Loads and process the data 
-    -|NeuralNetwork.py  #Customisable feed forward network in torch for classification 
-    -|plot.py           #Contains code for plotting results ecc
-    -|training.py       #Code that wraps training in sklearn and torch and training loop for torch. Can also perform CrossValidation 
-    -|testing.py        #Last step of testing for the pipeline 
-    -|pipeline.py       #Puts everything together in a simple, readable way to run the pipeline! 
+GW_classifier/
+├── Config/ # Configs to customize analysis
+├── Data/ # Data to be analyzed
+├── Results/ # Results, plots, pretrained models
+├── Notebooks/ # Exploratory or experimental notebooks
+└── GW_classifier/
+├── init.py
+├── logger.py # Logging setup
+├── utils.py # Load/save models and helpers
+├── dataprocessing.py # Load and process data
+├── NeuralNetwork.py # PyTorch feed-forward network
+├── plot.py # Plotting results
+├── training.py # Training logic + CrossValidation
+├── testing.py # Final evaluation stage
+└── pipeline.py # Orchestrates the pipeline
 
 
 
