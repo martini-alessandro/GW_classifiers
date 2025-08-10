@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
-from GW_classifier.dataprocessing import load_and_preprocess, postprocess_and_plot
+from GW_classifier.dataprocessing import load_and_preprocess
 from GW_classifier.training import train_model 
+from GW_classifier.testing import test_model 
 from GW_classifier.utils import load_module, create_directory 
 from GW_classifier.logger import get_logger
 from sklearn.model_selection import train_test_split 
@@ -11,22 +12,24 @@ import json
 logger = get_logger(__name__)
 
 def main(config): 
-    logger.info("Starting the training pipeline")
-    if 'seed' in config:
-        np.random.seed(config['seed'])
+    #Start logger and pipeline 
+    seed = config.get('seed', None)
+    np.random.seed(seed) 
+    logger.info(f"Starting the training pipeline with seed: {seed}")
+
     #Load and scale the data 
     X, y = load_and_preprocess(config['datasource'])
     scaler = load_module("sklearn.preprocessing", config['scaler'])
     X = scaler.fit_transform(X) 
 
-    #Split in train and test 
+    #Split data and train the model 
     X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=.05, random_state=config['seed'])
     model, results = train_model(config, X_train, y_train) 
-    
-    #Predict labes for test set 
-    y_hat = model.predict(X_test) if hasattr(model, "predict") else model(X_test) 
+    logger.info("Model training completed, starting testing phase")
 
-    postprocess_and_plot(config, model, y_test, y_hat)
+    #Test model and save the fitted results 
+    test_model(config, model, X_test, y_test)
+
     return 0 
 
 
